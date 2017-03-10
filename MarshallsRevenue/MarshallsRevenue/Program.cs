@@ -22,14 +22,15 @@ namespace MarshallsRevenue
 
             double totalRevenue = DisplayPricesAndReturnRevenue(numberOfInteriorMurals, numberOfExteriorMurals, month);
 
-            string[] interiorMuralCustomers = new string[numberOfInteriorMurals];
-            string[] exteriorMuralCustomers = new string[numberOfExteriorMurals];
+            Mural[] interiorMurals = new Mural[numberOfInteriorMurals];
+            Mural[] exteriorMurals = new Mural[numberOfExteriorMurals];
 
-            GetCustomerNames("Enter the {0} interior customer's name: ", interiorMuralCustomers);
-            GetCustomerNames("Enter the {0} exterior customer's name: ", exteriorMuralCustomers);
+            WriteLine("--- Interior Murals ---");
+            GetMuralInfo(interiorMurals);
+            WriteLine("--- Exterior Murals ---");
+            GetMuralInfo(exteriorMurals);
 
-            DisplayCustomerNames("Here are the interior customers:", interiorMuralCustomers);
-            DisplayCustomerNames("Here are the exterior customers:", exteriorMuralCustomers);
+            DisplayMuralInfo(interiorMurals, exteriorMurals);
         }
 
         static int GetMonth()
@@ -115,5 +116,80 @@ namespace MarshallsRevenue
                 WriteLine(name);
             }
         }
+
+        static void GetMuralInfo(Mural[] murals)
+        {
+            for (int index = 0; index < murals.Length; index++)
+            {
+                murals[index] = new Mural();
+                Write("Enter the customer's name: ");
+                murals[index].CustomerName = ReadLine();
+
+                murals[index].Code = "I";
+
+                while (murals[index].Code == "I")
+                {
+                    Write("Enter a mural code: (");
+
+                    foreach (string muralCode in Mural.muralCodes)
+                    {
+                        Write("({0})", muralCode);
+                    }
+
+                    Write(")");
+
+                    murals[index].Code = ReadLine();
+                }
+            }
+        }
+
+        static void DisplayMuralInfo(Mural[] interiorMurals, Mural[] exteriorMurals)
+        {
+            string userInput = "";
+
+            while (userInput != "*")
+            {
+                Write("Enter a code to see the information for that mural: ");
+                userInput = ReadLine();
+
+                Mural inputMural = new Mural();
+
+                inputMural.Code = userInput;
+
+                if (inputMural.Code != "I")
+                {
+                    bool hasMurals = false;
+                    WriteLine("--- {0} Interior Murals ---", inputMural.Description);
+                    foreach (Mural mural in interiorMurals)
+                    {
+                        if (mural.Code == inputMural.Code)
+                        {
+                            WriteLine("Customer Name: {0}", mural.CustomerName);
+                            hasMurals = true;
+                        }
+                    }
+                    if (!hasMurals)
+                    {
+                        WriteLine("There are no murals with that code");
+                    }
+                    hasMurals = false;
+                    WriteLine("--- {0} Exterior Murals ---", inputMural.Description);
+                    foreach (Mural mural in exteriorMurals)
+                    {
+                        if (mural.Code == inputMural.Code)
+                        {
+                            WriteLine("Customer Name: {0}", mural.CustomerName);
+                            hasMurals = true;
+                        }
+                    }
+                    if (!hasMurals)
+                    {
+                        WriteLine("There are no murals with that code");
+                    }
+                }
+            }
+        }
     }
+
+    
 }
